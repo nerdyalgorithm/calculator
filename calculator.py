@@ -23,25 +23,36 @@ display.grid(row=0, column=0, columnspan=4, ipadx=8, ipady=15, pady=10)
 def on_click(value):
     if value == "=":
         try:
-            result = eval(display.get())  # Evaluate the expression
+            expression = display.get()
+            expression = expression.replace("%", "/100")  # Convert % to divide by 100
+            result = eval(expression)  # Evaluate the updated expression
             display.delete(0, tk.END)
             display.insert(tk.END, result)
         except Exception:
             display.delete(0, tk.END)
             display.insert(tk.END, "Error")
+    
     elif value == "C":
         display.delete(0, tk.END)  # Clear display
+    
+    elif value == "(":
+        # Automatically insert * before ( if previous character is a number or )
+        if display.get() and (display.get()[-1].isdigit() or display.get()[-1] == ")"):
+            display.insert(tk.END, "*(")
+        else:
+            display.insert(tk.END, "(")
+    
     else:
         display.insert(tk.END, value)  # Insert clicked button value
-
+        
 #----------------------------------------------------------------
 # Button layout
 buttons = [
-    ("7", 1, 0), ("8", 1, 1), ("9", 1, 2), ("C", 1, 3),
-    ("4", 2, 0), ("5", 2, 1), ("6", 2, 2), ("*", 2, 3),
-    ("1", 3, 0), ("2", 3, 1), ("3", 3, 2), ("-", 3, 3),
-    ("0", 4, 0), (".", 4, 1), ("+", 4, 2), ("=", 4, 3),
-    ("%", 5, 0), ("(", 5, 1), (")", 5, 2), ("/", 5, 3)  
+    ("(", 1, 0), (")", 1, 1), ("%", 1, 2), ("C", 1, 3),
+    ("7", 2, 0), ("8", 2, 1), ("9", 2, 2), ("/", 2, 3),
+    ("4", 3, 0), ("5", 3, 1), ("6", 3, 2), ("*", 3, 3),
+    ("1", 4, 0), ("2", 4, 1), ("3", 4, 2), ("-", 4, 3),
+    ("0", 5, 0), (".", 5, 1), ("=", 5, 2), ("+", 5, 3)  
     # Clear button (row 5, column 0)
 ]
 
